@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaee.clientinfomanagesystem.mapper.contactMapper">
+    <select id="findContacts" resultType="com.javaee.clientinfomanagesystem.po.contact">
+        select c.*,cl.cname clientName from contact c left join client cl on c.cid=cl.cid
+    </select>
+
+    <select id="findContact" parameterType="int" resultType="com.javaee.clientinfomanagesystem.po.contact">
+        select * from contact where coid=#{coid};
+    </select>
+
+    <insert id="addContact" parameterType="com.javaee.clientinfomanagesystem.po.contact">
+        insert into contact(cid,coname,position,cophone,coemail,isMain)
+        values(#{cid},#{coname},#{position},#{cophone},#{coemail},#{isMain});
+    </insert>
+
+    <update id="updateContact" parameterType="com.javaee.clientinfomanagesystem.po.contact">
+        update contact set cid=#{cid},coname=#{coname},position=#{position},
+                           cophone=#{cophone},coemail=#{coemail},isMain=#{isMain}
+        where coid=#{coid};
+    </update>
+
+    <delete id="deleteContact" parameterType="int">
+        delete from contact where coid=#{coid};
+    </delete>
+
+    <select id="findContactByKey" resultType="com.javaee.clientinfomanagesystem.po.contact">
+        select c.*,cl.cname clientName
+        from contact c left join client cl on c.cid=cl.cid
+        where c.coname like concat('%',#{key},'%')
+           or c.position like concat('%',#{key},'%')
+    </select>
+</mapper>

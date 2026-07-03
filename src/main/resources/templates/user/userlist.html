@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+    <link rel="stylesheet" th:href="@{/CSS/style.css}">
+</head>
+<body class="list-page">
+<h3>用户管理</h3>
+<div class="search-bar">
+    <form th:action="@{/user/user_list}" method="get">
+        <input type="text" name="key" th:value="${key}" placeholder="输入登录账号搜索">
+        <button type="submit">搜索</button>
+    </form>
+    <button class="batch-del-btn" onclick="batchDel()">批量删除</button>
+    <a href="#" class="add-btn" th:href="@{/user/to_add_user}">添加用户</a>
+</div>
+<table class="data-table">
+    <thead>
+    <tr>
+        <th>选择</th>
+        <th>登录账号</th>
+        <th>邮箱</th>
+        <th>角色</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${pageInfo.list}" th:id="${user.uid}">
+        <td><input type="checkbox" name="uid" th:value="${user.uid}"></td>
+        <td th:text="${user.username}"></td>
+        <td th:text="${user.email}"></td>
+        <td th:text="${user.role.rname}"></td>
+        <td>
+            <a th:href="@{/user/to_edit_user(uid=${user.uid})}">编辑</a>
+            <a href="#" th:onclick="'deleteUser(' + ${user.uid} + ')'">删除</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div class="pagination">
+    <span>当前 <span th:text="${pageInfo.pageNum}"></span> 页, 总<span th:text="${pageInfo.pages}"></span> 页, 共<span th:text="${pageInfo.total}"></span> 条记录</span>
+    <a th:href="@{/user/user_list(key=${key}, pageNum=1)}">首页</a>
+    <a th:href="@{/user/user_list(key=${key}, pageNum=${pageInfo.hasPreviousPage} ? ${pageInfo.prePage} : 1)}">上一页</a>
+    <a th:href="@{/user/user_list(key=${key}, pageNum=${pageInfo.hasNextPage} ? ${pageInfo.nextPage} : ${pageInfo.pages})}">下一页</a>
+    <a th:href="@{/user/user_list(key=${key}, pageNum=${pageInfo.pages})}">尾页</a>
+</div>
+<script th:src="@{/JS/jquery-3.6.0.min.js}"></script>
+<script>
+    function deleteUser(uid) {
+        if (!confirm("确定删除？")) return;
+        $.post("/user/delete_user", {uid: uid}, function(res) {
+            if (res === "SUCCESS") $("#" + uid).remove();
+        });
+    }
+    function batchDel() {
+        let uidArr = [];
+        $("input[name='uid']:checked").each(function() { uidArr.push($(this).val()); });
+        if (uidArr.length === 0) { alert("请选择要删除的数据！"); return; }
+        if (!confirm("确定批量删除？")) return;
+        $.post("/user/batch_delete_user", {cids: uidArr.join(",")}, function(res) {
+            if (res === "SUCCESS") location.reload();
+        });
+    }
+</script>
+</body>
+</html>

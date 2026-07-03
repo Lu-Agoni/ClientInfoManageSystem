@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+    <link rel="stylesheet" th:href="@{/CSS/style.css}">
+</head>
+<body class="register-page">
+<div class="container">
+    <h2>用户注册</h2>
+    <form th:action="@{/user/doregister}" method="post">
+        <div class="form-item">
+            <div class="title">用户名：</div>
+            <div class="obj"><input type="text" name="username" placeholder="请输入用户名"></div>
+        </div>
+        <div class="form-item">
+            <div class="title">密码：</div>
+            <div class="obj"><input type="password" name="password" placeholder="请输入密码" id="pwd"></div>
+        </div>
+        <div class="form-item">
+            <div class="title">密码确认：</div>
+            <div class="obj"><input type="password" placeholder="密码确认" id="repPwd"></div>
+        </div>
+        <div class="form-item">
+            <div class="title">邮箱：</div>
+            <div class="obj"><input type="text" name="email" placeholder="请输入邮箱"></div>
+        </div>
+        <div class="form-item">
+            <div class="title">角色：</div>
+            <div class="obj">
+                <select name="rid">
+                    <option th:each="role : ${roles}" th:value="${role.rid}" th:text="${role.rname}"></option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" id="btn-register" onclick="return checkPwd()">注册</button>
+        <div class="links"><a th:href="@{/user/login}">已有账号？立即登录</a></div>
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+    </form>
+</div>
+<script>
+    function checkPwd(){
+        let pwd = document.getElementById("pwd").value;
+        let repPwd = document.getElementById("repPwd").value;
+        if(pwd !== repPwd){
+            alert("两次密码不一致！");
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

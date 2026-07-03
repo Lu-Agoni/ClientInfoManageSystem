@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaee.clientinfomanagesystem.mapper.clientMapper">
+
+    <select id="findClients" resultType="com.javaee.clientinfomanagesystem.po.client">
+        select * from client
+    </select>
+
+    <select id="findClient" parameterType="int" resultType="com.javaee.clientinfomanagesystem.po.client">
+        select * from client where cid=#{cid};
+    </select>
+
+    <insert id="addClient" parameterType="com.javaee.clientinfomanagesystem.po.client" useGeneratedKeys="true" keyProperty="cid">
+        insert into client(cno,cname,cphone,caddress,industry,level,source)
+        values(#{cno},#{cname},#{cphone},#{caddress},#{industry},#{level},#{source});
+    </insert>
+
+    <update id="updateClient" parameterType="com.javaee.clientinfomanagesystem.po.client">
+        update client set cno=#{cno},cname=#{cname},cphone=#{cphone},caddress=#{caddress},industry=#{industry},level=#{level},source=#{source}
+        where cid=#{cid};
+    </update>
+
+    <delete id="deleteClient" parameterType="int">
+        delete from client where cid=#{cid};
+    </delete>
+
+    <select id="findClientByKey" resultType="com.javaee.clientinfomanagesystem.po.client">
+        select * from client
+        where cno like concat('%',#{key},'%') or cname like concat('%',#{key},'%')
+    </select>
+
+</mapper>

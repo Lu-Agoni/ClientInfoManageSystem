@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>添加新用户</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="dlg-container">
+    <div class="dlg-title">修改用户</div>
+    <form method="post" th:action="@{/user/edit_user}">
+        <input type="hidden" name="uid" th:value="${user.uid}">
+        <div class="control-box"></span><input type="hidden" name="userId" th:value="${user.userId}"></div>
+        <div class="control-box"><span>登录账号:</span><input type="text" name="username" th:value="${user.username}" readonly></div>
+        <div class="control-box"><span>邮箱:</span><input type="text" name="email" th:value="${user.email}"></div>
+        <div class="control-box"><span>身份:</span>
+            <select name="role.rid" th:value="${user.role.rid}">
+                <option th:value="${role.rid}" th:each="role:${roles}" th:text="${role.rname}" th:selected="${user.role.rid == role.rid}"></option>
+            </select>
+        </div>
+        <div class="control-box"><button type="submit">保存</button></div>
+    </form>
+</div>
+</body>
+</html>

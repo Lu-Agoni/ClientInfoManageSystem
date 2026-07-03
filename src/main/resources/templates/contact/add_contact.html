@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${contactOper=='1'}?'编辑联系人信息':'添加联系人信息'"></title>
+</head>
+<body>
+<form method="post" th:action="${contactOper=='1'?'/contact/edit_contact':'/contact/add_contact'}">
+    <span th:if="${contactOper=='1'}">
+        <input type="hidden" name="coid" th:value="${contact.coid}">
+    </span>
+    <br>
+    客户：<select name="cid" th:value="${contactOper=='1' ? contact.cid : ''}">
+    <option th:each="client : ${clients}" th:value="${client.cid}" th:text="${client.cname}" th:selected="${contactOper=='1' and contact.cid == client.cid}"></option></select><br>
+    姓名：<input type="text" name="coname" placeholder="姓名" th:value="${contactOper=='1'?contact.coname:''}"><br>
+    职位：<input type="text" name="position" placeholder="职位" th:value="${contactOper=='1'?contact.position:''}"><br>
+    电话：<input type="text" name="cophone" placeholder="电话" th:value="${contactOper=='1'?contact.cophone:''}"><br>
+    邮箱：<input type="text" name="coemail" placeholder="邮箱" th:value="${contactOper=='1'?contact.coemail:''}"><br>
+    是否为主要联系人(1是/0否)：<input type="text" name="isMain" placeholder="0/1" th:value="${contactOper=='1'?contact.isMain:''}"><br>
+    <input type="submit" th:value="${contactOper=='1'}?'修改':'添加'">
+</form>
+</body>
+</html>

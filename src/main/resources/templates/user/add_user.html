@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${userOper == '1'} ? '编辑用户' : '添加用户'"></title>
+    <link rel="stylesheet" th:href="@{/CSS/style.css}">
+</head>
+<body>
+<div class="dlg-container">
+    <div class="dlg-title" th:text="${userOper == '1'} ? '编辑用户' : '添加用户'"></div>
+    <form th:action="${userOper == '1'} ? '/user/edit_user' : '/user/add_user'" method="post">
+        <input type="hidden" name="uid" th:if="${userOper == '1'}" th:value="${user.uid}">
+        <div class="control-box">
+            <span>登录账号：</span>
+            <input type="text" name="username" th:value="${user.username}" th:readonly="${userOper == '1'}">
+        </div>
+        <div class="control-box" th:if="${userOper != '1'}">
+            <span>密码：</span>
+            <input type="password" name="password">
+        </div>
+        <div class="control-box">
+            <span>邮箱：</span>
+            <input type="text" name="email" th:value="${user.email}">
+        </div>
+        <div class="control-box">
+            <span>身份：</span>
+            <select name="role.rid">
+                <option th:each="role : ${roles}" th:value="${role.rid}" th:text="${role.rname}"
+                        th:selected="${userOper == '1' and user.role.rid == role.rid}"></option>
+            </select>
+        </div>
+        <div class="control-box">
+            <button type="submit">保存</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

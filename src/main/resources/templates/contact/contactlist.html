@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>联系人信息管理</title>
+    <link rel="stylesheet" th:href="@{/CSS/style.css}">
+</head>
+<body class="list-page">
+<h3>联系人信息管理</h3>
+<div class="search-bar">
+    <form th:action="@{/contact/contact_list}" method="get">
+        <input type="text" name="key" th:value="${key}" placeholder="输入姓名/职位搜索">
+        <button type="submit">搜索</button>
+    </form>
+    <button class="batch-del-btn" onclick="batchDel()">批量删除</button>
+    <a href="#" class="add-btn" th:href="@{/contact/to_add_contact}">添加联系人</a>
+</div>
+
+<table class="data-table">
+    <thead>
+    <tr>
+        <th>选择</th>
+        <th>ID</th>
+        <th>所属客户</th>
+        <th>姓名</th>
+        <th>职位</th>
+        <th>电话</th>
+        <th>邮箱</th>
+        <th>是否主联系人</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="contact:${pageInfo.list}" th:id="${contact.coid}">
+        <td><input type="checkbox" name="coid" th:value="${contact.coid}"></td>
+        <td th:text="${contact.coid}"></td>
+        <td th:text="${contact.clientName}"></td>
+        <td th:text="${contact.coname}"></td>
+        <td th:text="${contact.position}"></td>
+        <td th:text="${contact.cophone}"></td>
+        <td th:text="${contact.coemail}"></td>
+        <td th:text="${contact.isMain == 1 ? '是' : '否'}"></td>
+        <td>
+            <a th:href="@{/contact/to_edit_contact(coid=${contact.coid})}">修改</a>
+            <a href="#" th:onclick="deleteContact([[${contact.coid}]])">删除</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="pagination">
+    <span>当前 <span th:text="${pageInfo.pageNum}"></span> 页, 总<span th:text="${pageInfo.pages}"></span> 页, 共<span th:text="${pageInfo.total}"></span> 条记录</span>
+    <a th:href="@{/contact/contact_list(key=${key})}">首页</a>
+    <a th:href="@{/contact/contact_list(pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1,key=${key})}">上一页</a>
+    <a th:href="@{/contact/contact_list(pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages},key=${key})}">下一页</a>
+    <a th:href="@{/contact/contact_list(pageNum=${pageInfo.pages},key=${key})}">尾页</a>
+</div>
+
+<script th:src="@{/JS/jquery-3.6.0.min.js}"></script>
+<script>
+    function deleteContact(coid) {
+        if (!confirm("确定删除？")) return;
+        $.post("/contact/delete_contact",{coid:coid},function(res){
+            if(res === "SUCCESS") $("#"+coid).remove();
+        });
+    }
+    function batchDel(){
+        let coidArr = [];
+        $("input[name='coid']:checked").each(function(){coidArr.push($(this).val());});
+        if(coidArr.length === 0){alert("请选择要删除的数据！");return;}
+        if(!confirm("确定批量删除？")) return;
+        $.post("/contact/batch_delete_contact",{coids:coidArr.join(",")},function(res){
+            if(res === "SUCCESS") location.reload();
+        });
+    }
+</script>
+</body>
+</html>

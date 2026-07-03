@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaee.clientinfomanagesystem.mapper.opportunityMapper">
+
+    <select id="findOpportunitys" resultType="com.javaee.clientinfomanagesystem.po.opportunity">
+        select o.*,c.cname clientName from opportunity o left join client c on o.cid=c.cid
+    </select>
+
+    <select id="findOpportunity" parameterType="int" resultType="com.javaee.clientinfomanagesystem.po.opportunity">
+        select * from opportunity where opid=#{opid};
+    </select>
+
+    <insert id="addOpportunity" parameterType="com.javaee.clientinfomanagesystem.po.opportunity">
+        insert into opportunity(cid,title,amount,probability,status)
+        values(#{cid},#{title},#{amount},#{probability},#{status});
+    </insert>
+
+    <update id="updateOpportunity" parameterType="com.javaee.clientinfomanagesystem.po.opportunity">
+        update opportunity set cid=#{cid},title=#{title},amount=#{amount},
+                               probability=#{probability},status=#{status}
+        where opid=#{opid};
+    </update>
+
+    <delete id="deleteOpportunity" parameterType="int">
+        delete from opportunity where opid=#{opid};
+    </delete>
+
+    <select id="findOpportunityByKey" resultType="com.javaee.clientinfomanagesystem.po.opportunity">
+        select o.*,c.cname clientName
+        from opportunity o left join client c on o.cid=c.cid
+        where o.title like concat('%',#{key},'%')
+    </select>
+
+</mapper>

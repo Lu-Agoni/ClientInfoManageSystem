@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>客户信息管理系统</title>
+    <link rel="stylesheet" th:href="@{/CSS/style.css}">
+</head>
+<body class="main-page">
+<div class="container">
+    <div th:replace="~{includes/leftMenu :: leftMenu}"></div>
+    <div class="right-content">
+        <div class="top-bar">
+            <div class="system-title">客户信息管理系统</div>
+            <div class="user-info-top">
+                欢迎，<span th:text="${session.user.username}"></span>
+                <a href="/user/logout" target="_top">注销</a>
+            </div>
+        </div>
+        <iframe name="contentFrame" src="/client/client_list" frameborder="0"></iframe>
+    </div>
+</div>
+</body>
+</html>

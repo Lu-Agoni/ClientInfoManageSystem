@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaee.clientinfomanagesystem.mapper.userMapper">
+    <resultMap id="userMap" type="com.javaee.clientinfomanagesystem.po.user">
+        <id property="uid" column="uid"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <association property="role" javaType="com.javaee.clientinfomanagesystem.po.role">
+            <result property="rid" column="rid"/>
+            <result property="rname" column="rname"/>
+        </association>
+    </resultMap>
+    <select id="login" resultMap="userMap">
+        SELECT u.*, r.rid, r.rname
+        FROM user u
+                 JOIN user_role ur ON u.uid = ur.uid
+                 JOIN role r ON ur.rid = r.rid
+        WHERE u.username = #{username} AND u.password = #{password}
+    </select>
+    <insert id="register" parameterType="com.javaee.clientinfomanagesystem.po.user" useGeneratedKeys="true" keyProperty="uid">
+        INSERT INTO user(username, password, email)
+        VALUES(#{username}, #{password}, #{email})
+    </insert>
+    <select id="findUsers" resultMap="userMap">
+        SELECT u.*, r.rid, r.rname
+        FROM user u
+                 JOIN user_role ur ON u.uid = ur.uid
+                 JOIN role r ON ur.rid = r.rid
+        ORDER BY u.uid
+    </select>
+    <select id="findUserByUserId" resultMap="userMap">
+        SELECT u.*, r.rid, r.rname
+        FROM user u
+                 JOIN user_role ur ON u.uid = ur.uid
+                 JOIN role r ON ur.rid = r.rid
+        WHERE u.uid = #{uid}
+    </select>
+    <select id="findByUsername" resultMap="userMap">
+        SELECT u.*, r.rid, r.rname
+        FROM user u
+                 JOIN user_role ur ON u.uid = ur.uid
+                 JOIN role r ON ur.rid = r.rid
+        WHERE u.username = #{username}
+    </select>
+    <insert id="addUser" parameterType="com.javaee.clientinfomanagesystem.po.user" useGeneratedKeys="true" keyProperty="uid">
+        insert into user(username,password,email)
+        values(#{username},#{password},#{email});
+    </insert>
+    <update id="updateUser" parameterType="com.javaee.clientinfomanagesystem.po.user">
+        update user set username=#{username},password=#{password},email=#{email}
+        where uid=#{uid};
+    </update>
+    <delete id="deleteUserByUserId">
+        DELETE FROM user WHERE uid = #{uid}
+    </delete>
+    <update id="updatePassword" parameterType="com.javaee.clientinfomanagesystem.po.user">
+        update user set password=#{param2}
+        where uid=#{param1};
+    </update>
+    <select id="findUserByKey" resultMap="userMap">
+        select u.*, r.rid, r.rname
+        from user u
+        left join user_role ur on u.uid = ur.uid
+        left join role r on ur.rid = r.rid
+        where u.username like concat('%', #{key}, '%')
+    </select>
+    <delete id="deleteUserRole">
+        delete from user_role where uid = #{uid}
+    </delete>
+    <insert id="addUserRole">
+        insert into user_role(uid, rid) values (#{uid}, #{rid})
+    </insert>
+</mapper>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>客户信息管理</title>
+    <link rel="stylesheet" th:href="@{/CSS/style.css}">
+</head>
+<body class="list-page">
+<h3>客户信息管理</h3>
+<div class="search-bar">
+    <form th:action="@{/client/client_list}" method="get">
+        <input type="text" name="key" th:value="${key}" placeholder="输入客户编号/姓名搜索">
+        <button type="submit">搜索</button>
+    </form>
+    <button class="batch-del-btn" onclick="batchDel()">批量删除</button>
+    <a href="#" class="add-btn" th:href="@{/client/to_add_client}">添加客户</a>
+</div>
+
+<table class="data-table">
+    <thead>
+    <tr>
+        <th>选择</th>
+        <th>ID</th>
+        <th>客户编号</th>
+        <th>客户姓名</th>
+        <th>电话</th>
+        <th>地址</th>
+        <th>行业</th>
+        <th>等级</th>
+        <th>来源</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="client:${pageInfo.list}" th:id="${client.cid}">
+        <td><input type="checkbox" name="cid" th:value="${client.cid}"></td>
+        <td th:text="${client.cid}"></td>
+        <td th:text="${client.cno}"></td>
+        <td th:text="${client.cname}"></td>
+        <td th:text="${client.cphone}"></td>
+        <td th:text="${client.caddress}"></td>
+        <td th:text="${client.industry}"></td>
+        <td th:text="${client.level}"></td>
+        <td th:text="${client.source}"></td>
+        <td>
+            <a th:href="@{/client/to_edit_client(cid=${client.cid})}">修改</a>
+            <a href="#" th:onclick="'deleteClient(' + ${client.cid} + ')'">删除</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="pagination">
+    <span>当前 <span th:text="${pageInfo.pageNum}"></span> 页, 总<span th:text="${pageInfo.pages}"></span> 页, 共<span th:text="${pageInfo.total}"></span> 条记录</span>
+    <a th:href="@{/client/client_list(key=${key})}">首页</a>
+    <a th:href="@{/client/client_list(pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1,key=${key})}">上一页</a>
+    <a th:href="@{/client/client_list(pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages},key=${key})}">下一页</a>
+    <a th:href="@{/client/client_list(pageNum=${pageInfo.pages},key=${key})}">尾页</a>
+</div>
+
+<script th:src="@{/JS/jquery-3.6.0.min.js}"></script>
+<script>
+    function deleteClient(cid) {
+        if (!confirm("确定删除？")) return;
+        $.post("/client/delete_client",{cid:cid},function(res){
+            if(res === "SUCCESS") $("#"+cid).remove();
+        });
+    }
+    function batchDel(){
+        let cidArr = [];
+        $("input[name='cid']:checked").each(function(){cidArr.push($(this).val());});
+        if(cidArr.length === 0){alert("请选择要删除的数据！");return;}
+        if(!confirm("确定批量删除？")) return;
+        $.post("/client/batch_delete_client",{cids:cidArr.join(",")},function(res){
+            if(res === "SUCCESS") location.reload();
+        });
+    }
+</script>
+</body>
+</html>

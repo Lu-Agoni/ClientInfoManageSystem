@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div th:fragment="leftMenu" class="left-menu">
+    <div class="logo-container">
+        <img th:src="@{/images/logo.png}" alt="客户信息管理系统" class="logo-img">
+    </div>
+    <ul>
+        <li th:if="${session.user.role.rname == '管理员'}">
+            <a href="/user/user_list" target="contentFrame">用户管理</a>
+        </li>
+        <li><a href="/client/client_list" target="contentFrame">客户管理</a></li>
+        <li><a href="/contact/contact_list" target="contentFrame">联系人管理</a></li>
+        <li><a href="/opportunity/list" target="contentFrame">商机管理</a></li>
+        <li><a href="/changePassword" target="contentFrame">修改密码</a></li>
+    </ul>
+</div>
+</body>
+</html>

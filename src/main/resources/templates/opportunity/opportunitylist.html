@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商机信息管理</title>
+    <link rel="stylesheet" th:href="@{/CSS/style.css}">
+</head>
+<body class="list-page">
+<h3>商机信息管理</h3>
+<div class="search-bar">
+    <form th:action="@{/opportunity/list}" method="get">
+        <input type="text" name="key" th:value="${key}" placeholder="输入商机标题/客户名称搜索">
+        <button type="submit">搜索</button>
+    </form>
+    <button class="batch-del-btn" onclick="batchDel()">批量删除</button>
+    <a href="#" class="add-btn" th:href="@{/opportunity/to_add_opportunity}">添加商机</a>
+</div>
+
+<table class="data-table">
+    <thead>
+    <tr>
+        <th>选择</th>
+        <th>ID</th>
+        <th>所属客户</th>
+        <th>商机标题</th>
+        <th>预计金额</th>
+        <th>成交概率</th>
+        <th>状态</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="op:${pageInfo.list}" th:id="${op.opid}">
+        <td><input type="checkbox" name="opid" th:value="${op.opid}"></td>
+        <td th:text="${op.opid}"></td>
+        <td th:text="${op.clientName}"></td>
+        <td th:text="${op.title}"></td>
+        <td th:text="${op.amount}"></td>
+        <td th:text="${op.probability}+'%'"></td>
+        <td th:text="${op.status}"></td>
+        <td>
+            <a th:href="@{/opportunity/to_edit_opportunity(opid=${op.opid})}">修改</a>
+            <a href="#" th:onclick="'deleteOp(' + ${op.opid} + ')'">删除</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="pagination">
+    <span>当前 <span th:text="${pageInfo.pageNum}"></span> 页, 总<span th:text="${pageInfo.pages}"></span> 页, 共<span th:text="${pageInfo.total}"></span> 条记录</span>
+    <a th:href="@{/opportunity/list(key=${key})}">首页</a>
+    <a th:href="@{/opportunity/list(pageNum=${pageInfo.hasPreviousPage}?${pageInfo.prePage}:1,key=${key})}">上一页</a>
+    <a th:href="@{/opportunity/list(pageNum=${pageInfo.hasNextPage}?${pageInfo.nextPage}:${pageInfo.pages},key=${key})}">下一页</a>
+    <a th:href="@{/opportunity/list(pageNum=${pageInfo.pages},key=${key})}">尾页</a>
+</div>
+
+<script th:src="@{/JS/jquery-3.6.0.min.js}"></script>
+<script>
+    function deleteOp(opid) {
+        if (!confirm("确定删除？")) return;
+        $.post("/opportunity/delete_opportunity",{opid:opid},function(res){
+            if(res === "SUCCESS") $("#"+opid).remove();
+        });
+    }
+    function batchDel(){
+        let opidArr = [];
+        $("input[name='opid']:checked").each(function(){opidArr.push($(this).val());});
+        if(opidArr.length === 0){alert("请选择要删除的数据！");return;}
+        if(!confirm("确定批量删除？")) return;
+        $.post("/opportunity/batch_delete_opportunity",{opids:opidArr.join(",")},function(res){
+            if(res === "SUCCESS") location.reload();
+        });
+    }
+</script>
+</body>
+</html>

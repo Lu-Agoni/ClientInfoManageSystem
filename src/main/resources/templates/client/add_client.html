@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${clientOper=='1'}?'编辑客户信息':'添加客户信息'"></title>
+</head>
+<body>
+<form th:action="${clientOper=='1'}?'/client/edit_client':'/client/add_client'" method="post">
+    <span th:if="${clientOper=='1'}">
+        <input type="hidden" name="cid" th:value="${client.cid}">
+    </span><br>
+    编号：<input type="text" name="cno" placeholder="编号" th:value="${clientOper=='1'}?${client.cno}:''"><br>
+    姓名：<input type="text" name="cname" placeholder="姓名" th:value="${clientOper=='1'}?${client.cname}:''"><br>
+    电话：<input type="text" name="cphone" placeholder="电话" th:value="${clientOper=='1'}?${client.cphone}:''"><br>
+    地址：<input type="text" name="caddress" placeholder="地址" th:value="${clientOper=='1'}?${client.caddress}:''"><br>
+    所在公司：<input type="text" name="industry" placeholder="所属公司" th:value="${clientOper=='1'}?${client.industry}:''"><br>
+    等级：<input type="text" name="level" placeholder="等级" th:value="${clientOper=='1'}?${client.level}:''"><br>
+    来源：<input type="text" name="source" placeholder="来源" th:value="${clientOper=='1'}?${client.source}:''"><br>
+    <input type="submit" th:value="${clientOper=='1'}?'修改':'添加'">
+</form>
+</body>
+</html>

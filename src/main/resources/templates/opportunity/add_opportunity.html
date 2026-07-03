@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${opportunityOper=='1'}?'编辑商机信息':'添加商机信息'"></title>
+</head>
+<body>
+<form method="post" th:action="${opportunityOper=='1'?'/opportunity/edit_opportunity':'/opportunity/add_opportunity'}">
+    <span th:if="${opportunityOper=='1'}">
+        <input type="hidden" name="opid" th:value="${opportunity.opid}">
+    </span>
+    <br>
+    所属客户：<select name="cid">
+    <option th:each="client : ${clients}" th:value="${client.cid}" th:text="${client.cname}"></option></select><br>
+    商机标题：<input type="text" name="title" placeholder="商机标题" th:value="${opportunityOper=='1'?opportunity.title:''}"><br>
+    预计金额：<input type="text" name="amount" placeholder="预计金额" th:value="${opportunityOper=='1'?opportunity.amount:''}"><br>
+    成交概率：<input type="text" name="probability" placeholder="成交概率" th:value="${opportunityOper=='1'?opportunity.probability:''}"><br>
+    当前进展：<input type="text" name="status" placeholder="当前进展" th:value="${opportunityOper=='1'?opportunity.status:''}"><br>
+    <input type="submit" th:value="${opportunityOper=='1'}?'修改':'新增'">
+</form>
+</body>
+</html>
